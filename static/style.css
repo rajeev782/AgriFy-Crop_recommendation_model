@@ -1,0 +1,29 @@
+/* Global Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Hero Section */
+.hero {
+    background: #d4edda;
+    padding: 50px 0;
+}
+
+/* Card Styling */
+.card {
+    border-radius: 12px;
+    background: white;
+}
+
+/* Button Styling */
+.btn-success {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Output Box */
+#result {
+    font-size: 22px;
+    font-weight: bold;
+}
