@@ -8,6 +8,8 @@ body {
 .hero {
     background: #d4edda;
     padding: 50px 0;
+    background: url("../static/farm.jpg") no-repeat center center/cover;
+    height: 100vh; /* Adjust height as needed */
 }
 
 /* Card Styling */
