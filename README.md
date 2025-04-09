@@ -74,7 +74,7 @@ genai.configure(api_key="YOUR_GEMINI_API_KEY")
 ### 5️⃣ Run the Flask App
 ```bash
 python app.py
-```
+
 
 ---
 
