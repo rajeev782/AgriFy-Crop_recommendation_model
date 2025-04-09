@@ -1,96 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgriFy - Crop Recommendation</title>
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriFy - Crop Recommendation</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8f9fa;
+    }
+    .hero {
+      background: linear-gradient(90deg, #5cb85c 0%, #4cae4c 100%);
+      color: white;
+      padding: 60px 0;
+      text-align: center;
+    }
+    .form-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 30px;
+    }
+    .result-box {
+      border-left: 5px solid #5cb85c;
+      background: #e9f9ee;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 500;
+      color: #3c763d;
+    }
+    footer {
+      margin-top: 60px;
+      text-align: center;
+      font-size: 14px;
+      color: #999;
+    }
+  </style>
 </head>
-
 <body>
-
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-success text-white">
-        <div class="container">
-            <a class="navbar-brand text-white fw-bold" href="#">🌿 AgriFy</a>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero text-center py-5">
-        <div class="container">
-            <h1 class="fw-bold text-success">Welcome to AgriFy</h1>
-            <p class="lead">An AI-powered system to help farmers choose the best crop for their land.</p>
-        </div>
-    </section>
-
-    <!-- Main Form Section -->
-    <div class="container my-4">
-        <div class="card shadow p-4">
-            <h3 class="text-center text-success mb-3">Enter Soil & Weather Data</h3>
-            <form id="cropForm" class="row g-3">
-                <div class="col-md-4">
-                    <label for="N" class="form-label">Nitrogen (N)</label>
-                    <input type="number" id="N" class="form-control" required>
-                </div>
-
-                <div class="col-md-4">
-                    <label for="P" class="form-label">Phosphorus (P)</label>
-                    <input type="number" id="P" class="form-control" required>
-                </div>
-
-                <div class="col-md-4">
-                    <label for="K" class="form-label">Potassium (K)</label>
-                    <input type="number" id="K" class="form-control" required>
-                </div>
-
-                <div class="col-md-4">
-                    <label for="temperature" class="form-label">Temperature (°C)</label>
-                    <input type="number" step="0.1" id="temperature" class="form-control" required>
-                </div>
-
-                <div class="col-md-4">
-                    <label for="humidity" class="form-label">Humidity (%)</label>
-                    <input type="number" step="0.1" id="humidity" class="form-control" required>
-                </div>
-
-                <div class="col-md-4">
-                    <label for="ph" class="form-label">pH Level</label>
-                    <input type="number" step="0.1" id="ph" class="form-control" required>
-                </div>
-
-                <div class="col-md-4">
-                    <label for="rainfall" class="form-label">Rainfall (mm)</label>
-                    <input type="number" step="0.1" id="rainfall" class="form-control" required>
-                </div>
-
-                <div class="col-12 text-center">
-                    <button type="submit" class="btn btn-success px-5">Get Recommendation</button>
-                </div>
-            </form>
-
-            <div id="loading" class="text-center mt-3" style="display: none;">
-                <div class="spinner-border text-success" role="status"></div>
-                <p>Processing...</p>
-            </div>
-
-            <h3 id="result" class="text-center text-success mt-4" style="display: none;">
-                🌱 Recommended Crop: <span id="crop-name"></span>
-            </h3>
-        </div>
+  <div class="hero">
+    <div class="container">
+      <h1 class="display-5">🌿 AgriFy</h1>
+      <p class="lead">Smart Crop Recommendation System using Soil & Weather Data</p>
+      <a href="/rotation" class="btn btn-light btn-lg mt-3">Crop Rotation Chatbot</a>
     </div>
+  </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <div class="container mt-5">
+    <div class="form-card mx-auto" style="max-width: 800px;">
+      <h4 class="mb-4 text-success">Enter Soil & Weather Parameters</h4>
+      <form id="cropForm">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label for="N" class="form-label">Nitrogen (N)</label>
+            <input type="number" class="form-control" id="N" required>
+          </div>
+          <div class="col-md-4">
+            <label for="P" class="form-label">Phosphorus (P)</label>
+            <input type="number" class="form-control" id="P" required>
+          </div>
+          <div class="col-md-4">
+            <label for="K" class="form-label">Potassium (K)</label>
+            <input type="number" class="form-control" id="K" required>
+          </div>
+          <div class="col-md-4">
+            <label for="temperature" class="form-label">Temperature (°C)</label>
+            <input type="number" class="form-control" id="temperature" required>
+          </div>
+          <div class="col-md-4">
+            <label for="humidity" class="form-label">Humidity (%)</label>
+            <input type="number" class="form-control" id="humidity" required>
+          </div>
+          <div class="col-md-4">
+            <label for="ph" class="form-label">pH Level</label>
+            <input type="number" class="form-control" id="ph" required>
+          </div>
+          <div class="col-md-12">
+            <label for="rainfall" class="form-label">Rainfall (mm)</label>
+            <input type="number" class="form-control" id="rainfall" required>
+          </div>
+        </div>
+        <div class="text-center mt-4">
+          <button type="submit" class="btn btn-success btn-lg px-5">Get Recommendation</button>
+        </div>
+      </form>
+      <div id="result" class="result-box mt-4" style="display: none;"></div>
+    </div>
+  </div>
+
+  <footer class="mt-5">&copy; 2025 AgriFy. All rights reserved.</footer>
+
+  <script>
+    document.getElementById("cropForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const data = {
+        N: document.getElementById("N").value,
+        P: document.getElementById("P").value,
+        K: document.getElementById("K").value,
+        temperature: document.getElementById("temperature").value,
+        humidity: document.getElementById("humidity").value,
+        ph: document.getElementById("ph").value,
+        rainfall: document.getElementById("rainfall").value
+      };
+
+      try {
+        const response = await fetch("/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        document.getElementById("result").innerText = `Recommended Crop: ${result.crop}`;
+        document.getElementById("result").style.display = "block";
+      } catch (error) {
+        document.getElementById("result").innerText = "Error occurred. Please try again.";
+        document.getElementById("result").style.display = "block";
+      }
+    });
+  </script>
 </body>
 </html>

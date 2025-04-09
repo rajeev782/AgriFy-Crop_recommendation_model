@@ -5,6 +5,8 @@ from flask import Flask, render_template, request, jsonify
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+import google.generativeai as genai
+from flask_cors import CORS
 
 # Load dataset
 file_path = os.path.join(os.getcwd(), "Crop_recommendation.csv")  # Use absolute path
@@ -27,7 +29,7 @@ X_test_scaled = scaler.transform(X_test)
 
 # Train model
 model = RandomForestClassifier(n_estimators=150, random_state=42, max_depth=20)
-os.makedirs("model", exist_ok=True)  # Create model directory if it doesn't exist
+os.makedirs("model", exist_ok=True)  
 model.fit(X_train_scaled, y_train)
 
 # Save model and scaler
@@ -38,6 +40,7 @@ print("✅ Model trained and saved successfully!")
 
 # Initialize Flask App
 app = Flask(__name__)
+CORS(app)
 
 # Load trained model
 if not os.path.exists(model_path):
@@ -46,6 +49,10 @@ if not os.path.exists(model_path):
 model_data = joblib.load(model_path)
 model = model_data["model"]
 scaler = model_data["scaler"]
+
+# Configure Gemini API
+genai.configure(api_key="AIzaSyA2jO0bCK5dSuqkKO2ZoXOyXTa1DQTKe9M")
+gemini_model = genai.GenerativeModel("gemini-1.5-pro-latest")
 
 @app.route("/")
 def home():
@@ -71,6 +78,16 @@ def predict():
     except Exception as e:
         print("Error:", str(e))  # Debugging log
         return jsonify({"error": str(e)})
+
+@app.route("/rotation")
+def rotation_page():
+    return render_template("rotation.html")
+
+@app.route("/ask_rotation", methods=["POST"])
+def ask_rotation():
+    user_input = request.json.get("question")
+    response = gemini_model.generate_content(user_input)
+    return jsonify({"answer": response.text})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)  # Run Flask on port 5001
