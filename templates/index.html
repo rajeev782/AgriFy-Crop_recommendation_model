@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AgriFy - Crop Recommendation</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -14,8 +14,7 @@
     .hero {
       background: linear-gradient(90deg, #5cb85c 0%, #4cae4c 100%);
       color: white;
-      padding: 60px 0;
-      text-align: center;
+      padding: 30px 0;
     }
     .form-card {
       background: white;
@@ -39,17 +38,36 @@
       font-size: 14px;
       color: #999;
     }
+    .logo {
+      height: 50px;
+      margin-right: 15px;
+    }
   </style>
 </head>
 <body>
+
+  <!-- 🔰 Hero Section with Logo + Button -->
   <div class="hero">
     <div class="container">
-      <h1 class="display-5">🌿 AgriFy</h1>
-      <p class="lead">Smart Crop Recommendation System using Soil & Weather Data</p>
-      <a href="/rotation" class="btn btn-light btn-lg mt-3">Crop Rotation Chatbot</a>
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <!-- Left: Logo + Title -->
+        <div class="d-flex align-items-center mb-3 mb-lg-0">
+          <img src="static\Agrify_logo.png" alt="AgriFy Logo" class="logo me-3"> <!-- Replace with your logo -->
+          <div>
+            <h1 class="display-6 mb-0">AgriFy</h1>
+            <p class="lead mt-1 mb-0">Smart Crop Recommendation System</p>
+          </div>
+        </div>
+
+        <!-- Right: Crop Rotation Button -->
+        <div class="text-end">
+          <a href="/rotation" class="btn btn-light btn-lg">Crop Rotation Chatbot</a>
+        </div>
+      </div>
     </div>
   </div>
 
+  <!-- 🌱 Crop Input Form -->
   <div class="container mt-5">
     <div class="form-card mx-auto" style="max-width: 800px;">
       <h4 class="mb-4 text-success">Enter Soil & Weather Parameters</h4>
@@ -57,31 +75,31 @@
         <div class="row g-3">
           <div class="col-md-4">
             <label for="N" class="form-label">Nitrogen (N)</label>
-            <input type="number" class="form-control" id="N" required>
+            <input type="number" class="form-control" id="N" step="any" required>
           </div>
           <div class="col-md-4">
             <label for="P" class="form-label">Phosphorus (P)</label>
-            <input type="number" class="form-control" id="P" required>
+            <input type="number" class="form-control" id="P" step="any" required>
           </div>
           <div class="col-md-4">
             <label for="K" class="form-label">Potassium (K)</label>
-            <input type="number" class="form-control" id="K" required>
+            <input type="number" class="form-control" id="K" step="any" required>
           </div>
           <div class="col-md-4">
             <label for="temperature" class="form-label">Temperature (°C)</label>
-            <input type="number" class="form-control" id="temperature" required>
+            <input type="number" class="form-control" id="temperature" step="any" required>
           </div>
           <div class="col-md-4">
             <label for="humidity" class="form-label">Humidity (%)</label>
-            <input type="number" class="form-control" id="humidity" required>
+            <input type="number" class="form-control" id="humidity" step="any" required>
           </div>
           <div class="col-md-4">
             <label for="ph" class="form-label">pH Level</label>
-            <input type="number" class="form-control" id="ph" required>
+            <input type="number" class="form-control" id="ph" step="any" required>
           </div>
           <div class="col-md-12">
             <label for="rainfall" class="form-label">Rainfall (mm)</label>
-            <input type="number" class="form-control" id="rainfall" required>
+            <input type="number" class="form-control" id="rainfall" step="any" required>
           </div>
         </div>
         <div class="text-center mt-4">
@@ -92,8 +110,10 @@
     </div>
   </div>
 
+  <!-- 📜 Footer -->
   <footer class="mt-5">&copy; 2025 AgriFy. All rights reserved.</footer>
 
+  <!-- 🔌 JS Script -->
   <script>
     document.getElementById("cropForm").addEventListener("submit", async function(event) {
       event.preventDefault();

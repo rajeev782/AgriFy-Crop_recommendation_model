@@ -9,7 +9,7 @@ import google.generativeai as genai
 from flask_cors import CORS
 
 # Load dataset
-file_path = os.path.join(os.getcwd(), "Crop_recommendation.csv")  # Use absolute path
+file_path = os.path.join(os.getcwd(), "Crop_recommendation.csv")
 if not os.path.exists(file_path):
     raise FileNotFoundError(f"Dataset not found: {file_path}")
 
@@ -29,7 +29,7 @@ X_test_scaled = scaler.transform(X_test)
 
 # Train model
 model = RandomForestClassifier(n_estimators=150, random_state=42, max_depth=20)
-os.makedirs("model", exist_ok=True)  
+os.makedirs("model", exist_ok=True)
 model.fit(X_train_scaled, y_train)
 
 # Save model and scaler
@@ -53,30 +53,31 @@ scaler = model_data["scaler"]
 # Configure Gemini API
 genai.configure(api_key="AIzaSyA2jO0bCK5dSuqkKO2ZoXOyXTa1DQTKe9M")
 gemini_model = genai.GenerativeModel("gemini-1.5-pro-latest")
+chat = gemini_model.start_chat(history=[])
 
 @app.route("/")
 def home():
-    return render_template("index.html")  # Ensure 'index.html' is inside 'templates/' folder
+    return render_template("index.html")
 
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
         data = request.json
-        print("Received Input:", data)  # Debugging log
+        print("Received Input:", data)
 
-        input_data = pd.DataFrame([[data["N"], data["P"], data["K"], data["temperature"], 
+        input_data = pd.DataFrame([[data["N"], data["P"], data["K"], data["temperature"],
                                     data["humidity"], data["ph"], data["rainfall"]]],
                                   columns=["N", "P", "K", "temperature", "humidity", "ph", "rainfall"])
 
         input_scaled = scaler.transform(input_data)
         prediction = model.predict(input_scaled)[0]
 
-        print("Predicted Crop:", prediction)  # Debugging log
+        print("Predicted Crop:", prediction)
 
         return jsonify({"crop": prediction})
 
     except Exception as e:
-        print("Error:", str(e))  # Debugging log
+        print("Error:", str(e))
         return jsonify({"error": str(e)})
 
 @app.route("/rotation")
@@ -85,9 +86,23 @@ def rotation_page():
 
 @app.route("/ask_rotation", methods=["POST"])
 def ask_rotation():
-    user_input = request.json.get("question")
-    response = gemini_model.generate_content(user_input)
-    return jsonify({"answer": response.text})
+    try:
+        data = request.get_json()
+        user_query = data.get("question", "")
+
+        print("📥 User asked:", user_query)
+
+        response = chat.send_message(user_query)
+        raw_reply = response.text
+
+        print("📤 Gemini replied:", raw_reply)
+
+        html_reply = raw_reply.replace("**", "").replace("*", "").replace("\n", "<br>")
+
+        return jsonify({"answer": html_reply})
+    except Exception as e:
+        print("❌ Error in Gemini:", str(e))
+        return jsonify({"answer": "Sorry, something went wrong: " + str(e)})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001, debug=True)  # Run Flask on port 5001
+    app.run(host="0.0.0.0", port=5001, debug=True)

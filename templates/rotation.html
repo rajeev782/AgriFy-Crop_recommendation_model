@@ -31,6 +31,7 @@
       border-radius: 12px;
       max-width: 75%;
       line-height: 1.5;
+      white-space: pre-line;
     }
     .user-msg {
       background-color: #d4edda;
@@ -59,7 +60,7 @@
     <h3 class="text-success text-center mb-4">🌾 Crop Rotation Assistant</h3>
     <div id="messages" class="chat-messages d-flex flex-column"></div>
     <div class="input-area">
-      <input type="text" id="userInput" class="form-control" placeholder="Ask what to plant after wheat...">
+      <input type="text" id="userInput" class="form-control" placeholder="Ask what to plant after wheat..." aria-label="User question">
       <button onclick="askBot()" class="btn btn-success">Ask</button>
     </div>
     <div class="text-center mt-3">
@@ -70,12 +71,19 @@
   <footer>&copy; 2025 AgriFy. All rights reserved.</footer>
 
   <script>
-    function appendMessage(text, sender) {
+    function appendMessage(content, sender) {
       const msg = document.createElement("div");
       msg.classList.add("message", sender === 'user' ? 'user-msg' : 'bot-msg');
-      msg.textContent = text;
-      document.getElementById("messages").appendChild(msg);
-      document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
+
+      if (sender === 'bot') {
+        msg.innerHTML = content;  // Bot reply may include formatted HTML
+      } else {
+        msg.textContent = content;  // Escape user input for safety
+      }
+
+      const messages = document.getElementById("messages");
+      messages.appendChild(msg);
+      messages.scrollTop = messages.scrollHeight;
     }
 
     async function askBot() {
@@ -94,8 +102,15 @@
         });
 
         const data = await res.json();
-        appendMessage(data.answer, 'bot');
+
+        // ✅ Correct key used now
+        if (data.answer) {
+          appendMessage(data.answer, 'bot');
+        } else {
+          appendMessage("No answer received from the bot.", 'bot');
+        }
       } catch (error) {
+        console.error("Bot Error:", error);
         appendMessage("Something went wrong. Please try again.", 'bot');
       }
     }
