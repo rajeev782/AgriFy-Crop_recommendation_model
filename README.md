@@ -76,15 +76,6 @@ genai.configure(api_key="YOUR_GEMINI_API_KEY")
 python app.py
 ```
 
-Visit:
-- Crop Recommendation → http://localhost:5001/
-- Crop Rotation Chatbot → http://localhost:5001/rotation
-
----
-
-## 📷 Screenshots
-*(Add screenshots here once UI is finalized)*
-
 ---
 
 ## 🤖 Model Training (Optional)
